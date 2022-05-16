@@ -66,7 +66,7 @@ priorityList.forEach(({ label, value }) => {
     // 添加任务
     taskQueue.push({
       priority: value,
-      count: 100,
+      count: 300,
     });
     // 开启调度
     schedule();
@@ -138,6 +138,8 @@ function perform(task: Task, didTimeout?: boolean): any {
 
 // 更新渲染
 function render(num: number) {
+  let result = 10000000;
+  while (result--) {}
   const span = document.createElement("span");
   const text = num as keyof typeof priorityColor;
   span.innerText = `${text}`;

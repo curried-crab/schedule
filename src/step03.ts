@@ -1,15 +1,16 @@
 // 最终demo显示
+
 import {
+  CallbackNode,
   unstable_IdlePriority as IdlePriority,
   unstable_ImmediatePriority as ImmediatePriority,
   unstable_LowPriority as LowPriority,
   unstable_NormalPriority as NormalPriority,
   unstable_UserBlockingPriority as UserBlockingPriority,
-  unstable_getFirstCallbackNode as getFirstCallbackNode,
   unstable_cancelCallback as cancelCallback,
-  unstable_shouldYield as shouldYield,
+  unstable_getFirstCallbackNode as getFirstCallbackNode,
   unstable_scheduleCallback as scheduleCallback,
-  CallbackNode,
+  unstable_shouldYield as shouldYield,
 } from "scheduler";
 
 type Priority =
@@ -94,13 +95,14 @@ function schedule() {
 
   // 判断当前任务优先级，是否需要调度
   const curPriority = curTask.priority;
-  // 说明还有任务在运行当中，新的最高优先级并不高于它，所以这个任务不能被中止
+  // 说明还有任务在运行当中，新的最高优先级并不高于它，所以这个任务不能被中止, (这里就是前一个任务是被暂停的，需要继续运行)
   if (curPriority === prevPriority) {
     return;
   }
 
   // 其他情况，取消掉任务调度，说明任务需要被打断，或者需要执行一个新的任务
-  // 这里不可能存在curPriority < prevPriority的情况，因为上一步中取出来的task，就是优先级最高的task了,因为到这里的时候，任务执行完的话，prevPriority = IdlePriority
+  // 这里不可能存在curPriority < prevPriority的情况，因为上一步中取出来的task，
+  // 就是优先级最高的task了,因为到这里的时候，任务执行完的话，prevPriority = IdlePriority
   cbNode && cancelCallback(cbNode);
 
   curCallback = scheduleCallback(curPriority, perform.bind(null, curTask));
